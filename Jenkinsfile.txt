@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git url: 'https://github.com/smiling29329/web-app-jforce.git', branch: 'main'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install -r app/requirements.txt'
+            }
+        }
+
+        stage('Lint Code') {
+            steps {
+                echo 'Linting code... (placeholder, can integrate pylint or flake8)'
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                echo 'Running unit tests... (none yet)'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("smiling29329/sample-web-app")
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withDockerRegistry([ credentialsId: 'dockerhub-creds', url: '' ]) {
+                    dockerImage.push()
+                }
+            }
+        }
+    }
+}
